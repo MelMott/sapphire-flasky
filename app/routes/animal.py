@@ -7,11 +7,11 @@ class Animal():
         self.name = name
         self.habitat = habitat
 
-sapphire_animals = [
-    Animal(1, "Anaconda", "Nikki Minaj", "Jungle"),
-    Animal(2, "Elephant", "Dumbo", "Our childhood!!!"),
-    Animal(3, "Unicorn", "Not Charlie", "Youtube")
-]
+# sapphire_animals = [
+#     Animal(1, "Anaconda", "Nikki Minaj", "Jungle"),
+#     Animal(2, "Elephant", "Dumbo", "Our childhood!!!"),
+#     Animal(3, "Unicorn", "Not Charlie", "Youtube")
+# ]
 
 def validate_animal(animal_id):
     try:
