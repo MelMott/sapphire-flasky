@@ -15,7 +15,7 @@ def create_app():
 
     app = Flask(__name__)
 
-    app.config["SQLACHEMY_DATABASE_URI"] = "postgresql+psycopg2://postgres:postgres@localhost:5432/sapphire_flasky_development"
+    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql+psycopg2://postgres:postgres@localhost:5432/sapphire_flasky_development"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.init_app(app)
     migrate.init_app(app,db)
