@@ -68,3 +68,15 @@ def create_animal():
         "name": new_animal.name,
         "msg": "Successfully created"
     }, 201
+
+@animals_bp.route("/<animal_id>", methods=["PUT"])
+def update_one_animal(animal_id):
+    request_body = request.get_json()
+
+    animal_to_update = validate_animal(animal_id)
+
+    animal_to_update.name = request_body["name"]
+
+    db.session.commit()
+
+    return animal_to_update.to_dict(), 200
