@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from flask import Blueprint, jsonify, abort, make_response
 
 class Animal():
@@ -13,11 +12,6 @@ class Animal():
 #     Animal(2, "Elephant", "Dumbo", "Our childhood!!!"),
 #     Animal(3, "Unicorn", "Not Charlie", "Youtube")
 # ]
-=======
-from flask import Blueprint, jsonify, abort, make_response, request
-from app.models.animal import Animal
-from app import db
->>>>>>> 4efb54e2954eef756f1632bee5988982a6294328
 
 def validate_animal(animal_id):
     try:
