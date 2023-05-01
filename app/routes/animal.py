@@ -1,4 +1,6 @@
-from flask import Blueprint, jsonify, abort, make_response
+from flask import Blueprint, jsonify, abort, make_response, request
+from app.models.animal import Animal
+from app import db
 
 class Animal():
     def __init__(self, id, species, name, habitat):
@@ -28,14 +30,17 @@ def validate_animal(animal_id):
 # All routes defined with animals_bp start with url_prefix (/animals)
 animals_bp = Blueprint("animals", __name__, url_prefix="/animals")
 
-@animals_bp.route("", methods=['GET'])
+@animals_bp.route("", methods=['GET','POST'])
 def handle_animals():
+    if request.method == 'GET':
     # all_animals is a list of Animal instances! We should use them as Animal instances, and access their values via .
-    all_animals = Animal.query.all()
-    animals_response = []
-    for animal in all_animals:
-        animals_response.append(animal.to_dict())
-    return jsonify(animals_response), 200
+        all_animals = Animal.query.all()
+        animals_response = []
+        for animal in all_animals:
+            animals_response.append(animal.to_dict())
+        return jsonify(animals_response), 200
+    elif request.method == 'POST':
+        request_body = request.get_json()
 
 @animals_bp.route("/<animal_id>", methods=["GET"])
 def handle_animal(animal_id):
