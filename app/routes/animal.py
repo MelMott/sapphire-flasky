@@ -80,3 +80,12 @@ def update_one_animal(animal_id):
     db.session.commit()
 
     return animal_to_update.to_dict(), 200
+
+@animals_bp.route("/<animal_id>", methods=["DELETE"])
+def delete_one_animal(animal_id):
+    animal_to_delete = validate_animal(animal_id)
+
+    db.session.delete(animal_to_delete)
+    db.session.commit()
+
+    return f"Animal #{animal_to_delete.id} successfully deleted", 200
