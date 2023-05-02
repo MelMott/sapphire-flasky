@@ -30,26 +30,19 @@ def validate_animal(animal_id):
 # All routes defined with animals_bp start with url_prefix (/animals)
 animals_bp = Blueprint("animals", __name__, url_prefix="/animals")
 
-@animals_bp.route("", methods=['GET','POST'])
+@animals_bp.route("", methods=['GET'])
 def handle_animals():
-    if request.method == 'GET':
+    name_query =request.args.get("name")
+    if name_query:
+        animals = Animal.query.filter_by(name=name_query)
     # all_animals is a list of Animal instances! We should use them as Animal instances, and access their values via .
-        all_animals = Animal.query.all()
-        animals_response = []
-        for animal in all_animals:
-            animals_response.append(animal.to_dict())
-        return jsonify(animals_response), 200
-    elif request.method == 'POST':
-        request_body = request.get_json()
-
-@animals_bp.route("/<animal_id>", methods=["GET"])
-def handle_animal(animal_id):
-    animal = validate_animal(animal_id)
-    return {
-        "id": animal.id,
-        "name": animal.name
-    }, 200
-
+    else:
+        animals = Animal.query.all()
+    animals_response = []
+    for animals in animals:
+        animals_response.append(animal.to_dict())
+    return jsonify(animals_response), 200
+    
 @animals_bp.route("", methods=['POST'])
 def create_animal():
     # Get the data from the request body
@@ -62,12 +55,13 @@ def create_animal():
     db.session.add(new_animal)
     db.session.commit()
 
-    # Give back our response
+@animals_bp.route("/<animal_id>", methods=["GET"])
+def handle_animal(animal_id):
+    animal = validate_animal(animal_id)
     return {
-        "id": new_animal.id,
-        "name": new_animal.name,
-        "msg": "Successfully created"
-    }, 201
+        "id": animal.id,
+        "name": animal.name
+    }, 200
 
 @animals_bp.route("/<animal_id>", methods=["PUT"])
 def update_one_animal(animal_id):
