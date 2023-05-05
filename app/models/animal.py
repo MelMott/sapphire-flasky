@@ -8,5 +8,16 @@ class Animal(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "species": self.species,
+            "age": self.age
         }
+    
+    @classmethod
+    def from_dict(cls, animal_details):
+        new_animal = Animal(
+            name=animal_details["name"],
+            species=animal_details["species"]
+            age=animal_details["age"]
+        )
+        return new_animal
