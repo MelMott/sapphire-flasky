@@ -26,34 +26,43 @@ def validate_animal(animal_id):
     return animal if animal else abort(make_response({'msg': f"No animal with id {animal_id}"}, 404))
 
 
-
 # All routes defined with animals_bp start with url_prefix (/animals)
 animals_bp = Blueprint("animals", __name__, url_prefix="/animals")
 
 @animals_bp.route("", methods=['GET'])
 def handle_animals():
-    name_query =request.args.get("name")
+    name_query = request.args.get("name")
     if name_query:
         animals = Animal.query.filter_by(name=name_query)
-    # all_animals is a list of Animal instances! We should use them as Animal instances, and access their values via .
     else:
         animals = Animal.query.all()
     animals_response = []
-    for animals in animals:
+    for animal in animals:
         animals_response.append(animal.to_dict())
     return jsonify(animals_response), 200
-    
+
+
 @animals_bp.route("", methods=['POST'])
 def create_animal():
     # Get the data from the request body
     request_body = request.get_json()
 
     # Use it to make an Animal
-    new_animal = Animal(name=request_body["name"])
+    new_animal = Animal(name=request_body["name"], species=request_body["species"], age=request_body["age"])
 
     # Persist (save, commit) it in the database
     db.session.add(new_animal)
     db.session.commit()
+
+@animals_bp.route("/<animal_id>", methods=["GET"])
+def handle_animal(animal_id):
+    animal = validate_animal(animal_id)
+    return {
+        "id": new_animal.id,
+        "name": new_animal.name,
+        "msg": "Successfully created"
+    }, 201
+
 
 @animals_bp.route("/<animal_id>", methods=["GET"])
 def handle_animal(animal_id):
@@ -66,14 +75,16 @@ def handle_animal(animal_id):
 @animals_bp.route("/<animal_id>", methods=["PUT"])
 def update_one_animal(animal_id):
     request_body = request.get_json()
-
     animal_to_update = validate_animal(animal_id)
-
+    
     animal_to_update.name = request_body["name"]
+    animal_to_update.species = request_body["species"]
+    animal_to_update.age = request_body["age"]
 
     db.session.commit()
+    
+    return jsonify(animal_to_update.to_dict()), 200
 
-    return animal_to_update.to_dict(), 200
 
 @animals_bp.route("/<animal_id>", methods=["DELETE"])
 def delete_one_animal(animal_id):
@@ -82,4 +93,6 @@ def delete_one_animal(animal_id):
     db.session.delete(animal_to_delete)
     db.session.commit()
 
-    return f"Animal #{animal_to_delete.id} successfully deleted", 200
+    return f"Animal {animal_to_delete.name} is deleted!", 200
+
+

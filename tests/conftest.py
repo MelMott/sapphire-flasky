@@ -2,38 +2,42 @@ import pytest
 from app import create_app
 from app import db
 from flask.signals import request_finished
-from app.models.animal import animal
+from app.models.animal import Animal
 
-@pytest.fixture
+
+# CREATE A NEW "TEST" APP 
+@pytest.fixture 
 def app():
     app = create_app({"TESTING": True})
 
-    #CLOSE DATABASE SESSION
+    # CLOSE THE DATABASE SESSION
     @request_finished.connect_via(app)
     def expire_session(send, response, **extra):
         db.session.remove()
-        
-    # SET UP A DATABASE AKA ARRANGE PORTION OF TESTING
-    # SET UP DATABASE
+
+    # AKA ARRANGE PORTION OF TESTING 
+    # SET UP A DATABASE
     with app.app_context():
-        db.create_all()
-        yield app 
+        db.create_all()  # RUN ALL THE MIGRATIONS
+        yield app
 
     # CLEAR DATABASE
     with app.app_context():
         db.drop_all()
 
 # CREATE A NEW CLIENT TO SEND OUR REQUESTS
-@pytest.fixture
+# AKA: creating a pytest version of Postman
+@pytest.fixture 
 def client(app):
     return app.test_client()
 
-    # POPULATE DATABASE
+
+# POPULATE DATABASE
 @pytest.fixture
 def three_animals(app):
-    animal_one = animal(id=1, name="Furby", species="Cat", age=17)
-    animal_two = animal(id=2, name="Gouda", species="cheese monster", age=14)
-    animal_three = animal(id=3, name="Foxy", species="flamingo", age=100)
+    animal_one = Animal(id=1, name="Furby", species="Cat", age=17)
+    animal_two = Animal(id=2, name="Gouda", species="Cheese Monster", age=14)
+    animal_three = Animal(id=3, name="Foxy", species="Flamingo", age=100)
 
     db.session.add(animal_one)
     db.session.add(animal_two)
