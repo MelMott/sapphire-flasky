@@ -30,9 +30,7 @@ def create_animal():
     db.session.add(new_animal)
     db.session.commit()
 
-@animals_bp.route("/<animal_id>", methods=["GET"])
-def handle_animal(animal_id):
-    animal = validate_animal(animal_id)
+    # Give back our response
     return {
         "id": new_animal.id,
         "name": new_animal.name,
@@ -67,5 +65,4 @@ def delete_one_animal(animal_id):
     db.session.commit()
 
     return f"Animal {animal_to_delete.name} is deleted!", 200
-
 
