@@ -6,8 +6,10 @@ class Animal(db.Model):
     name = db.Column(db.String(80))
     species = db.Column(db.String(80))
     age = db.Column(db.Integer)
-
-
+    
+    sanctuary = db.relationship("Sanctuary", back_populates="animals")
+    sanctuary_id = db.Column(db.Integer, db.ForeignKey('sanctuary.id'))
+    
     def to_dict(self):
         return {
             "id": self.id,
